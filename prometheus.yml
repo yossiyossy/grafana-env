@@ -1,0 +1,17 @@
+global:
+  scrape_interval:     60s
+  evaluation_interval: 60s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: "remo"
+    static_configs:
+      - targets: ['localhost:9352']
+  - job_name: "co2"
+    static_configs:
+      - targets: ['rpi:9352']
+  - job_name: "weather"
+    static_configs:
+      - targets: ['localhost:9191']

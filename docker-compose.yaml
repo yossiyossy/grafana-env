@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  remo-exporter:
+    ports:
+      - 9352:9352
+    image: kenfdev/remo-exporter:latest
+    environment:
+      OAUTH_TOKEN: ${REMO_OAUTH_TOKEN}
+  openweather-exporter:
+    image: billykwooten/openweather-exporter
+    container_name: openweather-exporter
+    restart: always
+    ports:
+      - "9191:9191"
+    environment:
+      - OW_LISTEN_ADDRESS=:9191
+      - OW_CITY=Nerima, JP
+      - OW_DEGREES_UNIT=C
+      - OW_APIKEY=${OW_APIKEY}
+      - OW_CACHE_TTL=60
+      - OW_ENABLE_POL=true
+  prom:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command: '--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus'
+    ports:
+      - 9090:9090
+    depends_on:
+      - remo-exporter
+      - openweather-exporter
+  grafana:
+    image: grafana/grafana
+    ports:
+      - '3000:3000'
+    depends_on:
+      - prom
+    entrypoint: >-
+      bash -c 'grafana-cli plugins install grafana-clock-panel \
+      && /run.sh'
