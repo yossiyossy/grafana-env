@@ -11,7 +11,7 @@ scrape_configs:
       - targets: ['localhost:9352']
   - job_name: "co2"
     static_configs:
-      - targets: ['rpi:9352']
+      - targets: ['rpi:9233']
   - job_name: "weather"
     static_configs:
       - targets: ['localhost:9191']

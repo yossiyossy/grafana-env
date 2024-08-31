@@ -30,6 +30,14 @@ services:
     depends_on:
       - remo-exporter
       - openweather-exporter
+  db:
+    image: mysql
+    restart: always
+    volumes:
+      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./mysql/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
   grafana:
     image: grafana/grafana
     ports:
